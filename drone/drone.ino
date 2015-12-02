@@ -2,9 +2,11 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP085_U.h>
 
-#include "err.h"      // User-level error reporting code
-#include "altitude.h" // Altitude monitoring code
+#include "err.h"      // User-level error reporting code.
+#include "altitude.h" // Altitude monitoring code.
 #include "sound.h"    // Microphone / audio reading code.
+#include "motor.h"    // Motor control. Get those fans spinning.
+#include "pid.h"      // Flight control. Make this thing do something.
 
 /* Remove this to build the final program with fewer lines of code. */
 #define DEBUG
