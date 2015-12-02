@@ -70,15 +70,30 @@ void setup(void) {
   // Initialize LED lights.
   
   // Give the barometer time to start up.
+  DRONE_STATE = STATE_INITIALIZING;
+  
   delay(1000);
 }
+
+short DRONE_STATE = 0;
+
+const short STATE_INITIALIZING = 0;
 
 
 void loop() {
   
-  // TODO: drone things
-  
-  
+  switch (DRONE_STATE) {
+    case STATE_INITIALIZING:
+      // TODO: arm ESC so that we can fly outchea
+      break;
+    case STATE_RUNNING:
+      // TODO: Flight control, read microphone input, etc.
+      break;
+    case STATE_ERROR:
+      // TODO: land, if possible.
+      break;
+  }
+
 }
 
 
