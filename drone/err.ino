@@ -1,3 +1,4 @@
+#include "err.h"
 
 /* Sets an error bit in the global error long. */
 extern void setError(int pos) {

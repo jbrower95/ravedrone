@@ -5,12 +5,8 @@
 #include "err.h" // User-level error reporting code
 #include "altitude.h" // Altitude monitoring code
 
-
-
 /* Remove this to build the final program with fewer lines of code. */
 #define DEBUG
-
-
 
 /* The global drone state. oooo */
 short DRONE_STATE = 0;
