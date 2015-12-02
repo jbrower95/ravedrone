@@ -61,17 +61,39 @@ void setup(void) {
       Serial.println("Barometer could not be initialized."); 
   }
   
+  /* TODO: */
+  
+  // Initialize motors, esc, etc.
+  
+  // Initialize microphone, EQ module, etc.
+  
+  // Initialize LED lights.
+  
   // Give the barometer time to start up.
   delay(1000);
 }
 
+
+void loop() {
+  
+  // TODO: drone things
+  
+  
+}
+
+
+
+
+
+
+
+ float __last_altitude = -1;
+ sensors_event_t __event;
 /**
  *  Task -- Reads an event from the barometer 
  *  and returns current calculated. Returns a cached value
  *  if not available.
  */ 
- float __last_altitude = -1;
- sensors_event_t __event;
 float getCurrentAltitude() {
   bmp.getEvent(&__event);
   if (event.pressure) {
