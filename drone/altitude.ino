@@ -1,5 +1,5 @@
- float __last_altitude = -1;
- sensors_event_t __event;
+ static float __last_altitude = -1;
+ static sensors_event_t __event;
 /**
  *  Task -- Reads an event from the barometer 
  *  and returns current calculated. Returns a cached value

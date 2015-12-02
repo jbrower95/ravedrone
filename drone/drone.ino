@@ -1,14 +1,14 @@
-#include "err.h"
-
-
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP085_U.h>
 
+#include "err.h" // User-level error reporting code
+#include "altitude.h" // Altitude monitoring code
+
+
+
 /* Remove this to build the final program with fewer lines of code. */
 #define DEBUG
-
-Adafruit_BMP085_Unified __barometer = Adafruit_BMP085_Unified(10085);
 
 /* Sea level pressure in RI -- used to calculate alt */
 const float SEA_LEVEL_PRESSURE_RI = 1027.6;
