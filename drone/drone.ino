@@ -35,8 +35,11 @@ void setup(void) {
   // Initialize motors, esc, etc.
   
   // Initialize microphone, EQ module, etc.
+  setupSound();
   
   // Initialize LED lights.
+  
+  // Initialize Drone state
   DRONE_STATE = STATE_FLYING;
   
   // Give the barometer time to start up.

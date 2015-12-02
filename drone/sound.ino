@@ -9,9 +9,8 @@ float topAvg = 0;
 int range = 150;
 float alpha = .5;
 
-void setup()
+void setupSound()
 {
- Serial.begin(9600);
  pinMode(analogPin, INPUT);
  pinMode(strobePin, OUTPUT);
  pinMode(resetPin, OUTPUT);
@@ -20,10 +19,10 @@ void setup()
  digitalWrite(resetPin, LOW);
  digitalWrite(strobePin, HIGH);
 
- Serial.println("MSGEQ7 test by J Skoba");
+ Serial.println("Sound initialized");
 }
 
-void loop()
+void sampleLoop()
 {
  digitalWrite(resetPin, HIGH);
  digitalWrite(resetPin, LOW);
@@ -43,25 +42,7 @@ void loop()
     topAvg = topAvg * (1 - alpha) + spectrumValue[i] * alpha;
   }
   
- // comment out/remove the serial stuff to go faster
- // - its just here for show
-// if (spectrumValue[i] < 10)
-// {
-// Serial.print(" ");
-// Serial.print(spectrumValue[i]);
-// }
-// else if (spectrumValue[i] < 100 )
-// {
-// Serial.print(" ");
-// Serial.print(spectrumValue[i]);
-// }
-// else
-// {
-// Serial.print(" ");
-// Serial.print(spectrumValue[i]);
-// }
-
- digitalWrite(strobePin, HIGH);
+   digitalWrite(strobePin, HIGH);
  }
  Serial.println();
 }
