@@ -10,8 +10,7 @@
 /* Remove this to build the final program with fewer lines of code. */
 #define DEBUG
 
-/* Sea level pressure in RI -- used to calculate alt */
-const float SEA_LEVEL_PRESSURE_RI = 1027.6;
+
 
 /* The global drone state. oooo */
 short DRONE_STATE = 0;
