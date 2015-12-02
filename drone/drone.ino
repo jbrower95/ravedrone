@@ -13,6 +13,14 @@ const float SEA_LEVEL_PRESSURE_RI = 1027.6;
 /* General state flags -- flick on one bit of these if your stuff is fucked up */
 unsigned long DRONE_ERROR = 0;
 
+const enum ERROR_TYPE {
+ ERROR_TYPE_BAROMETER = 1;
+ ERROR_TYPE_FLIGHT_CONTROL = 2;
+ ERROR_TYPE_MOTOR = 3;
+ ERROR_TYPE_POWER = 4;
+ ERROR_TYPE_PID = 5;
+};
+
 /* Sets an error bit in the global error long. */
 void setError(int pos) {
   #ifdef DEBUG
@@ -59,6 +67,7 @@ void setup(void) {
   Serial.println("Initializing pressure sensor.");
   if (!__barometer.begin()) {
       Serial.println("Barometer could not be initialized."); 
+      setError(ERROR_TYPE_BAROMETER);
   }
   
   /* TODO: */
@@ -77,23 +86,38 @@ void setup(void) {
 
 short DRONE_STATE = 0;
 
+const short STATE_ERROR = -1;
 const short STATE_INITIALIZING = 0;
-
+const short STATE_READY = 1;
+const short STATE_FLYING = 2;
 
 void loop() {
   
   switch (DRONE_STATE) {
     case STATE_INITIALIZING:
-      // TODO: arm ESC so that we can fly outchea
+      // TODO: arm ESC -> transition to STATE_READY
       break;
-    case STATE_RUNNING:
-      // TODO: Flight control, read microphone input, etc.
+    case STATE_READY:
+      // TODO: Initialize Flight control, get off the ground, etc.
+      
+      // Useful functions: 
+      //     float getCurrentAltitude();
       break;
     case STATE_ERROR:
-      // TODO: land, if possible.
+      if (DRONE_ERROR & ERROR_TYPE_BAROMETER) {
+        // TODO: Assign this to a specific piece of failing equipment
+      }
+      
+      // TODO: check the rest of the error types.
+      break;
+    case STATE_FLYING:
+      // TODO: Flight control.
       break;
   }
-
+  
+  if (getError()) {
+   DRONE_STATE = STATE_ERROR; 
+  }
 }
 
 
@@ -114,7 +138,7 @@ float getCurrentAltitude() {
   if (event.pressure) {
      __last_altitude = bmp.pressureToAltitude(SEA_LEVEL_PRESSURE_RI, event.pressure);
   } else {
-    
+    setError(
   }
   
   return __last_altitude;
