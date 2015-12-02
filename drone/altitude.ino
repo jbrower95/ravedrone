@@ -6,11 +6,11 @@
  *  if not available.
  */ 
 float getCurrentAltitude() {
-  bmp.getEvent(&__event);
+  __barometer.getEvent(&__event);
   if (event.pressure) {
      __last_altitude = bmp.pressureToAltitude(SEA_LEVEL_PRESSURE_RI, event.pressure);
   } else {
-    setError(
+    setError(ERROR_TYPE_BAROMETER);
   }
   
   return __last_altitude;

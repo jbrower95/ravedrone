@@ -57,10 +57,6 @@ void loop() {
       //     float getCurrentAltitude();
       break;
     case STATE_ERROR:
-      if (DRONE_ERROR & ERROR_TYPE_BAROMETER) {
-        // TODO: Assign this to a specific piece of failing equipment
-      }
-      
       // TODO: check the rest of the error types.
       break;
     case STATE_FLYING:
@@ -69,7 +65,10 @@ void loop() {
   }
   
   if (getError()) {
-   DRONE_STATE = STATE_ERROR; 
+     /* handle errors */
+     if (DRONE_ERROR & ERROR_TYPE_BAROMETER) {
+        // TODO: Assign this to a specific piece of failing equipment
+      }
   }
 }
 
