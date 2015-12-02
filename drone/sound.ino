@@ -22,16 +22,15 @@ void setupSound()
  Serial.println("Sound initialized");
 }
 
-void sampleLoop()
+void readSound()
 {
  digitalWrite(resetPin, HIGH);
  digitalWrite(resetPin, LOW);
 
- for (int i = 0; i < 7; i++)
- {
- digitalWrite(strobePin, LOW);
- delayMicroseconds(30); // to allow the output to settle
- spectrumValue[i] = analogRead(analogPin);
+ for (int i = 0; i < 7; i++) {
+   digitalWrite(strobePin, LOW);
+   delayMicroseconds(30); // to allow the output to settle
+   __SOUND[i] = analogRead(analogPin);
 
   if (i == 3) {
     Serial.print(spectrumValue[i]);
@@ -39,10 +38,9 @@ void sampleLoop()
     if (abs(spectrumValue[i] - topAvg) > range) {
       Serial.println("BEAT");
     }
-    topAvg = topAvg * (1 - alpha) + spectrumValue[i] * alpha;
+    topAvg = topAvg * (1 - alpha) + __SOUND[i] * alpha;
   }
   
    digitalWrite(strobePin, HIGH);
  }
- Serial.println();
 }
