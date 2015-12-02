@@ -2,7 +2,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP085_U.h>
 
-#include "err.h" // User-level error reporting code
+#include "err.h"      // User-level error reporting code
 #include "altitude.h" // Altitude monitoring code
 
 /* Remove this to build the final program with fewer lines of code. */
@@ -34,10 +34,9 @@ void setup(void) {
   // Initialize microphone, EQ module, etc.
   
   // Initialize LED lights.
+  DRONE_STATE = STATE_FLYING;
   
   // Give the barometer time to start up.
-  DRONE_STATE = STATE_INITIALIZING;
-  
   delay(1000);
 }
 
@@ -57,6 +56,9 @@ void loop() {
       break;
     case STATE_FLYING:
       // TODO: Flight control.
+      float altitude = getCurrentAltitude();
+      
+      // do something with the altitude.
       break;
   }
   
