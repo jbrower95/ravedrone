@@ -4,6 +4,7 @@
 
 #include "err.h"      // User-level error reporting code
 #include "altitude.h" // Altitude monitoring code
+#include "sound.h"    // Microphone / audio reading code.
 
 /* Remove this to build the final program with fewer lines of code. */
 #define DEBUG
