@@ -1,15 +1,4 @@
 
-/* General state flags -- flick on one bit of these if your stuff is fucked up */
-extern unsigned long DRONE_ERROR = 0;
-
-extern const enum ERROR_TYPE {
- ERROR_TYPE_BAROMETER = 1;
- ERROR_TYPE_FLIGHT_CONTROL = 2;
- ERROR_TYPE_MOTOR = 3;
- ERROR_TYPE_POWER = 4;
- ERROR_TYPE_PID = 5;
-};
-
 /* Sets an error bit in the global error long. */
 extern void setError(int pos) {
   #ifdef DEBUG
