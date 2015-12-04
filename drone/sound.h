@@ -5,7 +5,7 @@
 void setupSound();
 
 // Call this to read fresh values for the EQ.
-void readSound();
+bool readSound();
 
 // Access this array to read the values for the EQ.
 float __SOUND[7];
