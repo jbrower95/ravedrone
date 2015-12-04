@@ -62,8 +62,7 @@ void loop() {
       break;
     case STATE_FLYING:
       // TODO: Flight control.
-      float altitude = getCurrentAltitude();
-      readSound();
+      float altitude = readAltitude();
       
       // TODO: Use __SOUND[] values to control lights.
       

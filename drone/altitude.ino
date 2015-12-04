@@ -8,7 +8,7 @@
  *  and returns current calculated. Returns a cached value
  *  if not available.
  */ 
-float getCurrentAltitude() {
+float readAltitude() {
   __barometer.getEvent(&__event);
   if (__event.pressure) {
      __last_altitude = __barometer.pressureToAltitude(SEA_LEVEL_PRESSURE_RI, __event.pressure);

@@ -3,7 +3,7 @@
 #define ALTITUDE_H
 
 /* Returns the current altitude in meters as a float. */
-float getCurrentAltitude();
+float readAltitude();
 
 /* The barometer object. */
 Adafruit_BMP085_Unified __barometer = Adafruit_BMP085_Unified(10085);
