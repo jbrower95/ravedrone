@@ -1,126 +1,73 @@
 #include "sound.h"
 
-int analogPin = 0; // read from multiplexer using analog input 0
-int strobePin = 2; // strobe is attached to digital pin 2
-int resetPin = 3; // reset is attached to digital pin 3
-int spectrumValue[7]; // to hold a2d values
+int readPin = 0; // Read from analog pin 0
+int strobePin = 2; // STROBE  on digital pin 2
+int resetPin = 3; // RESET on digital pin 3
 
-float topAvg = 0;
-int range = 150;
-float alpha = .5;
+// The average of the current sound input, and the previous loops average
+float avg = 0;
+float prevAvg = 0;
 
-void setupSound()
-{
- pinMode(analogPin, INPUT);
- pinMode(strobePin, OUTPUT);
- pinMode(resetPin, OUTPUT);
- analogReference(DEFAULT);
+// Set up the threshold and the decay rate, for use when detecting a beat
+static float origT = 100;
+static float thresholdMin = origT - 40;
+static float threshold = origT;
+static float decayRate = .9;
 
- digitalWrite(resetPin, LOW);
- digitalWrite(strobePin, HIGH);
-
- Serial.println("Sound initialized");
-}
-
-void readSound()
-{
- digitalWrite(resetPin, HIGH);
- digitalWrite(resetPin, LOW);
-
- for (int i = 0; i < 7; i++) {
-   digitalWrite(strobePin, LOW);
-   delayMicroseconds(30); // to allow the output to settle
-   __SOUND[i] = analogRead(analogPin);
-
-  if (i == 3) {
-    Serial.print(spectrumValue[i]);
-    Serial.print("    ");
-    if (abs(spectrumValue[i] - topAvg) > range) {
-      Serial.println("BEAT");
-    }
-    topAvg = topAvg * (1 - alpha) + __SOUND[i] * alpha;
-  }
+// With no input, MSGEQ7 outputs around 50-80 in each spectrum.
+// Use this to filter the values.
+static int filter = 80;
   
-   digitalWrite(strobePin, HIGH);
- }
-}
-// TO BE USED REAL SOON
- * /* David Wang
- * Code that takes audio input from a 3.5mm cable
- * and flashes an LED strip based on the frequency 
- * of the music.
- *
- * HUGE thanks to the arduino community
- * If you see your code here, I owe you my gratitude
- *
- */
+  void setupSound()
+  {
+    pinMode(readPin, INPUT);
+    pinMode(strobePin, OUTPUT);
+    pinMode(resetPin, OUTPUT);
+    analogReference(DEFAULT);
+    
+    digitalWrite(resetPin, LOW);
+    digitalWrite(strobePin, HIGH);
+    
+    Serial.println("Sound initialized");
+  }
 
-//int analogPin = 0; // MSGEQ7 OUT
-//int strobePin = 2; // MSGEQ7 STROBE
-//int resetPin = 3; // MSGEQ7 RESET
-//int spectrumValue[7];
-//
-//// MSGEQ7 OUT pin produces values around 50-80
-//// when there is no input, so use this value to
-//// filter out a lot of the chaff.
-//int filterValue = 80;
-//
-//// LED pins connected to the PWM pins on the Arduino
-//
-//int ledPinR = 9;
-//int ledPinG = 10;
-//int ledPinB = 11;
-//
-//void setup()
-//{
-//  Serial.begin(9600);
-//  // Read from MSGEQ7 OUT
-//  pinMode(analogPin, INPUT);
-//  // Write to MSGEQ7 STROBE and RESET
-//  pinMode(strobePin, OUTPUT);
-//  pinMode(resetPin, OUTPUT);
-//
-//  // Set analogPin's reference voltage
-//  analogReference(DEFAULT); // 5V
-//
-//  // Set startup values for pins
-//  digitalWrite(resetPin, LOW);
-//  digitalWrite(strobePin, HIGH);
-//}
-//
-//void loop()
-//{
-//  // Set reset pin low to enable strobe
-//  digitalWrite(resetPin, HIGH);
-//  digitalWrite(resetPin, LOW);
-//
-//  // Get all 7 spectrum values from the MSGEQ7
-//  for (int i = 0; i < 7; i++)
-//  {
-//    digitalWrite(strobePin, LOW);
-//    delayMicroseconds(30); // Allow output to settle // Probably can't do this
-//
-//    spectrumValue[i] = analogRead(analogPin);
-//
-//    // Constrain any value above 1023 or below filterValue
-//    spectrumValue[i] = constrain(spectrumValue[i], filterValue, 1023);
-//
-//    // Remap the value to a number between 0 and 255
-//    spectrumValue[i] = map(spectrumValue[i], filterValue, 1023, 0, 255);
-//
-//    // Remove serial stuff after debugging
-//    Serial.print(spectrumValue[i]);
-//    Serial.print(" ");
-//    digitalWrite(strobePin, HIGH);
-//   }
-//
-//   Serial.println();
-//
-//   // Write the PWM values to the LEDs
-//   // I find that with three LEDs, these three spectrum values work the best
-//   analogWrite(ledPinR, spectrumValue[1]); 
-//   analogWrite(ledPinG, spectrumValue[4]); 
-//   analogWrite(ledPinB, spectrumValue[6]); 
-//}
+  void readSound()
+  {
+    // Reset to allow strobe to work
+    digitalWrite(resetPin, HIGH);
+    digitalWrite(resetPin, LOW);
+    prevAvg = avg;
 
- */
+    avg = 0;
+    
+    // MSGEQ7 gathers 7 spectrum values (63Hz, 160Hz, 400Hz, 1kHz, 2.5kHz, 6.25kHz and 16kHz)
+    for (int i = 0; i < 7; i++)
+    {
+      digitalWrite(strobePin, LOW);
+      delayMicroseconds(30); // Need to allow output to settle (doesn't work right without this)
+      
+      // Read in the ith spectrum value
+      __SOUND[i] = analogRead(readPin);
+      
+      // Value should only be in the range from filter to 1023
+      __SOUND[i] = constrain(__SOUND[i], filter, 1023);
+      
+      // With values now only between filter and 1023, remap relatively within range 0-255
+      __SOUND[i] = map(__SOUND[i], filter, 1023, 0, 255);
+
+      // Average in the spectrum value. 1/7 = .142857...
+      avg += __SOUND[i] * (.142857142857);
+      digitalWrite(strobePin, HIGH);
+    }
+
+    // Make sure threshold only decays until it reaches the minimum value
+    if (threshold > thresholdMin) {
+      threshold *= decayRate;
+    }
+
+    // If the new average has changed more than the threshold, we found a beat!
+    if (abs(avg - prevAvg) >= threshold) {
+      // TODO: Call beat function
+    }
+  }
+
