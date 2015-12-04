@@ -31,7 +31,7 @@ static int filter = 80;
     Serial.println("Sound initialized");
   }
 
-  void readSound()
+  bool readSound()
   {
     // Reset to allow strobe to work
     digitalWrite(resetPin, HIGH);
@@ -67,7 +67,9 @@ static int filter = 80;
 
     // If the new average has changed more than the threshold, we found a beat!
     if (abs(avg - prevAvg) >= threshold) {
-      // TODO: Call beat function
+      return true;
+    } else {
+      return false;
     }
   }
 
