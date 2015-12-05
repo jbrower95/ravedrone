@@ -2,11 +2,12 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP085_U.h>
 
-#include "err.h"      // User-level error reporting code.
-#include "altitude.h" // Altitude monitoring code.
-#include "sound.h"    // Microphone / audio reading code.
-#include "motor.h"    // Motor control. Get those fans spinning.
-#include "pid.h"      // Flight control. Make this thing do something.
+#include "err.h"      // User-level error reporting code
+#include "altitude.h" // Altitude monitoring code
+#include "lights.h"   // Lighting up the skies
+#include "sound.h"    // Microphone / audio reading code
+#include "motor.h"    // Motor control
+#include "pid.h"      // Flight control
 
 /* Remove this to build the final program with fewer lines of code. */
 #define DEBUG
@@ -32,17 +33,18 @@ void setup(void) {
   
   /* TODO: */
   
-  // Initialize motors, esc, etc.
+  // Initialize motors, esc, etc
   
-  // Initialize microphone, EQ module, etc.
+  // Initialize microphone, EQ module, etc
   setupSound();
   
-  // Initialize LED lights.
+  // Initialize lights
+  setupLights();
   
-  // Initialize Drone state
+  // Initialize drone state
   DRONE_STATE = STATE_FLYING;
   
-  // Give the barometer time to start up.
+  // Give the barometer time to start up (approx. 1 second)
   delay(1000);
 }
 
@@ -64,7 +66,9 @@ void loop() {
       // TODO: Flight control.
       float altitude = readAltitude();
       
-      // TODO: Use __SOUND[] values to control lights.
+      bool beatDidOccur = readSound();
+      
+
       
       // do something with the altitude.
       break;
