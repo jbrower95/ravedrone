@@ -50,7 +50,6 @@ void setup(void) {
 
 
 void loop() {
-  
   switch (DRONE_STATE) {
     case STATE_INITIALIZING:
       // TODO: arm ESC -> transition to STATE_READY
@@ -62,12 +61,17 @@ void loop() {
       //     float getCurrentAltitude();
       break;
     case STATE_FLYING:
-      // TODO: Flight control.
-      float altitude = readAltitude();
+      const float altitude = readAltitude();
+      const bool beat = readSound();
       
-      // TODO: Use __SOUND[] values to control lights.
+      #ifdef DEBUG
+      Serial.print("Altitude: ");
+      Serial.println(altitude);
       
-      // do something with the altitude.
+      Serial.print("Beat?: ");
+      Serial.println(beat);
+      #endif
+      
       break;
   }
   
