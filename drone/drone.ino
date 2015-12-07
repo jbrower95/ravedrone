@@ -24,11 +24,12 @@ void setup(void) {
   clearError();
   
   /* Barometer init code */
-  Serial.println("Initializing pressure sensor.");
+  Serial.print("Initializing pressure sensor: ");
   if (!__barometer.begin()) {
-      Serial.println("Barometer could not be initialized."); 
+      Serial.println("FAILURE."); 
       setError(ERROR_TYPE_BAROMETER);
   }
+  Serial.println("OK");
   
   /* TODO: */
   
