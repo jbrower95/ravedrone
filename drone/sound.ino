@@ -65,6 +65,7 @@ bool readSound() {
 
     // If the new average has changed more than the threshold, we found a beat!
     if (abs(avg - prevAvg) >= threshold) {
+      threshold = origT;
       return true;
     } else {
       return false;
