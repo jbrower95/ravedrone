@@ -8,6 +8,7 @@
 #include "sound.h"    // Microphone / audio reading code
 #include "motor.h"    // Motor control
 #include "pid.h"      // Flight control
+#include "bluetooth.h"// Bluetooth control
 
 /* Remove this to build the final program with fewer lines of code. */
 #define DEBUG
@@ -25,11 +26,12 @@ void setup(void) {
   clearError();
   
   /* Barometer init code */
-  Serial.println("Initializing pressure sensor.");
+  Serial.print("Initializing pressure sensor: ");
   if (!__barometer.begin()) {
-      Serial.println("Barometer could not be initialized."); 
+      Serial.println("FAILURE."); 
       setError(ERROR_TYPE_BAROMETER);
   }
+  Serial.println("OK");
   
   /* TODO: */
   
@@ -51,7 +53,6 @@ void setup(void) {
 
 
 void loop() {
-  
   switch (DRONE_STATE) {
     case STATE_INITIALIZING:
       // TODO: arm ESC -> transition to STATE_READY
@@ -63,14 +64,23 @@ void loop() {
       //     float getCurrentAltitude();
       break;
     case STATE_FLYING:
-      // TODO: Flight control.
-      float altitude = readAltitude();
+      const float altitude = readAltitude();
+      const bool beat = readSound();
       
+      #ifdef DEBUG
+      Serial.print("Altitude: ");
+      Serial.println(altitude);
+      #endif
+
       bool beatDidOccur = readSound();
 
       updateLightsWithBeatDidOccur(beatDidOccur);
+
+      #ifdef DEBUG
+      Serial.print("Beat?: ");
+      Serial.println(beat);
+      #endif
       
-      // do something with the altitude.
       break;
   }
   

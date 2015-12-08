@@ -18,8 +18,7 @@ static float decayRate = .9;
 // Use this to filter the values.
 static int filter = 80;
   
-  void setupSound()
-  {
+void setupSound() {
     pinMode(readPin, INPUT);
     pinMode(strobePin, OUTPUT);
     pinMode(resetPin, OUTPUT);
@@ -29,10 +28,9 @@ static int filter = 80;
     digitalWrite(strobePin, HIGH);
     
     Serial.println("Sound initialized");
-  }
+}
 
-  bool readSound()
-  {
+bool readSound() {
     // Reset to allow strobe to work
     digitalWrite(resetPin, HIGH);
     digitalWrite(resetPin, LOW);
@@ -72,5 +70,5 @@ static int filter = 80;
     } else {
       return false;
     }
-  }
+}
 
