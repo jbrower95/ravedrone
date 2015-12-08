@@ -7,6 +7,7 @@
 #include "sound.h"    // Microphone / audio reading code.
 #include "motor.h"    // Motor control. Get those fans spinning.
 #include "pid.h"      // Flight control. Make this thing do something.
+#include "bluetooth.h"// Bluetooth control.
 
 /* Remove this to build the final program with fewer lines of code. */
 #define DEBUG
