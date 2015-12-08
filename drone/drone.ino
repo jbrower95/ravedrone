@@ -45,7 +45,7 @@ void setup(void) {
   DRONE_STATE = STATE_FLYING;
   
   // Give the barometer time to start up (approx. 1 second)
-  delay(1000);
+  delay(5000);
 }
 
 
@@ -67,8 +67,8 @@ void loop() {
       float altitude = readAltitude();
       
       bool beatDidOccur = readSound();
-      
 
+      updateLightsWithBeatDidOccur(beatDidOccur);
       
       // do something with the altitude.
       break;

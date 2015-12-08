@@ -9,7 +9,7 @@ float avg = 0;
 float prevAvg = 0;
 
 // Set up the threshold and the decay rate, for use when detecting a beat
-static float origT = 100;
+static float origT = 50;
 static float thresholdMin = origT - 40;
 static float threshold = origT;
 static float decayRate = .9;
@@ -67,6 +67,7 @@ static int filter = 80;
 
     // If the new average has changed more than the threshold, we found a beat!
     if (abs(avg - prevAvg) >= threshold) {
+      threshold = origT;
       return true;
     } else {
       return false;

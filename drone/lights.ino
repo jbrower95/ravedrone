@@ -6,6 +6,7 @@ const int GREEN_PIN = 12;
 const int BLUE_PIN = 13;
 
 int intensity = 0;
+int r = HIGH;
 
 void setupLights() {
   pinMode(RED_PIN, OUTPUT);
@@ -22,14 +23,16 @@ void setupLights() {
 void updateLightsWithBeatDidOccur(bool beatDidOccur) {
   if (beatDidOccur) {
     intensity = 255;
+    r = LOW;
   } else {
-    intensity = 31;
+    intensity = max(7, intensity * 0.75);
+    r = LOW;
   }
 
   // Write updates to lights
-  analogWrite(POWER_PIN, 0);
-  digitalWrite(RED_PIN, HIGH);
-  digitalWrite(GREEN_PIN, HIGH);
-  digitalWrite(BLUE_PIN, HIGH);
+  analogWrite(POWER_PIN, intensity);
+  digitalWrite(RED_PIN, r);
+  digitalWrite(GREEN_PIN, LOW);
+  digitalWrite(BLUE_PIN, LOW);
 }
 
