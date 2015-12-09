@@ -2,6 +2,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP085_U.h>
 #include <EEPROM.h>
+#include <Servo.h>
 
 #include "err.h"      // User-level error reporting code
 #include "altitude.h" // Altitude monitoring code
@@ -13,6 +14,7 @@
 
 /* Remove this to build the final program with fewer lines of code. */
 #define DEBUG
+//#define BLUETOOTH
 
 /* The global drone state. oooo */
 short DRONE_STATE = 0;
@@ -20,6 +22,7 @@ const short STATE_ERROR = -1;
 const short STATE_INITIALIZING = 0;
 const short STATE_READY = 1;
 const short STATE_FLYING = 2;
+const short STATE_LANDING = 3;
 
 void setup(void) {
   Serial.begin(9600);
@@ -34,51 +37,60 @@ void setup(void) {
   }
   Serial.println("OK");
   
-  /* TODO: */
-  
-  // Initialize motors, esc, etc
-  
-  // Initialize microphone, EQ module, etc
+  // Initialize motors, sound, lights, BLE.
+  setupMotor();
   setupSound();
-  
-  // Initialize lights
   setupLights();
-
-  // Initialize BLE
+  
+  #ifdef BLUETOOTH
   setupBLE();
+  #endif
   
   // Initialize drone state
-  DRONE_STATE = STATE_FLYING;
+  DRONE_STATE = STATE_INITIALIZING;
   
-  // Give the barometer time to start up (approx. 1 second)
+  // Give the barometer / other parts time to start up.
   delay(5000);
 }
 
 
+int expected_altitude; 
+
+int schedule = 0;
 
 void loop() {
   switch (DRONE_STATE) {
-    case STATE_INITIALIZING:
-      // TODO: arm ESC -> transition to STATE_READY
+    case STATE_INITIALIZING: {
+      // go up 2 meters.
+      setFlightTarget(readAltitude() + 2);
+      DRONE_STATE = STATE_FLYING;
       break;
-    case STATE_READY:
-      // TODO: Initialize Flight control, get off the ground, etc.
-      
-      // Useful functions: 
-      //     float getCurrentAltitude();
+    }
+    case STATE_LANDING:
+      // turn off the motor.
+      setMotorTarget(0);
+      tickMotor();
       break;
     case STATE_FLYING:
       const float altitude = readAltitude();
       const bool beat = readSound();
 
-      int c = readBLE();
-      if (c == LAND) {
-        
-      } else if (c == UP_THRESHOLD) {
-        writeCurrentThreshold(increaseOrigThreshold());
-      } else if (c == DOWN_THRESHOLD) {
-        writeCurrentThreshold(decreaseOrigThreshold());
+      /* Deal with bluetooth if BLUETOOTH is defined. */
+      #ifdef BLUETOOTH
+      int c = readBLE(); 
+      switch (c) {
+        case LAND:
+          // to land, set the motor speed to zero.
+          DRONE_STATE = STATE_LANDING;
+          break;
+        case UP_THRESHOLD:
+          writeCurrentThreshold(increaseOrigThreshold());
+          break;
+        case DOWN_THRESHOLD:
+          writeCurrentThreshold(decreaseOrigThreshold());
+          break;
       }
+      #endif
       
       #ifdef DEBUG
       Serial.print("Altitude: ");
@@ -88,11 +100,17 @@ void loop() {
       bool beatDidOccur = readSound();
 
       updateLightsWithBeatDidOccur(beatDidOccur);
-
+      
       #ifdef DEBUG
       Serial.print("Beat?: ");
       Serial.println(beat);
       #endif
+      
+      if (!schedule) {
+        // Run once every 20 ticks
+        flightControl();
+        tickMotor();
+      }
       
       break;
   }
@@ -101,8 +119,14 @@ void loop() {
      /* handle errors */
      if (DRONE_ERROR & ERROR_TYPE_BAROMETER) {
         // TODO: Assign this to a specific piece of failing equipment
+        Serial.println("Error: Couldn't set up barometer.");
+        clearError();
+        DRONE_STATE = STATE_LANDING;
      }
   }
+  
+  schedule++;
+  schedule = schedule % 20;
 }
 
 

@@ -11,4 +11,9 @@
  const short ERROR_TYPE_MOTOR = 3;
  const short ERROR_TYPE_POWER = 4;
  const short ERROR_TYPE_PID = 5;
+ 
+ void setError(int pos);
+ inline int getError();
+ inline void clearError();
+ 
  #endif

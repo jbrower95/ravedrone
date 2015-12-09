@@ -1,3 +1,5 @@
+#ifdef BLUETOOTH
+
 #include "bluetooth.h"
 #include <SPI.h>
 #include <boards.h>
@@ -51,3 +53,4 @@ int readBLE() {
   ble_do_events();
 }
 
+#endif
