@@ -9,7 +9,7 @@ float avg = 0;
 float prevAvg = 0;
 
 // Set up the threshold and the decay rate, for use when detecting a beat
-static float origT = 50;
+static float origT = 45;
 static float thresholdMin = origT - 40;
 static float threshold = origT;
 static float decayRate = .9;
@@ -18,7 +18,8 @@ static float decayRate = .9;
 // Use this to filter the values.
 static int filter = 80;
   
-void setupSound() {
+  void setupSound()
+  {
     pinMode(readPin, INPUT);
     pinMode(strobePin, OUTPUT);
     pinMode(resetPin, OUTPUT);
@@ -28,9 +29,10 @@ void setupSound() {
     digitalWrite(strobePin, HIGH);
     
     Serial.println("Sound initialized");
-}
+  }
 
-bool readSound() {
+  bool readSound()
+  {
     // Reset to allow strobe to work
     digitalWrite(resetPin, HIGH);
     digitalWrite(resetPin, LOW);
@@ -70,5 +72,5 @@ bool readSound() {
     } else {
       return false;
     }
-}
+  }
 
