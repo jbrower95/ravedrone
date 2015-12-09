@@ -5,7 +5,7 @@
 // Control this large balloon with the power of PID
 
 // Proportionality constant
-float kP = 12;
+float kP = 6;
 float kI = .7;
 float kD = .5;
 
@@ -27,10 +27,20 @@ void flightControl() {
   
   // calculate error
   float error = target - currentAltitude;
- 
+  
+  if (error > 0) {
+    Serial.println("Positive Error! - Engaging motor.");
+   setMotorTarget(2000); 
+  } else {
+    Serial.println("Negative error - disengaging motor.");
+   setMotorTarget(1200); 
+  }
+  
+  return;
+  
   float P = error * kP;
-  float I = Integral * kI;
-  float D = (lastAltitude - currentAltitude) * kD;
+  float I = 0; //Integral * kI;
+  float D = 0; //(lastAltitude - currentAltitude) * kD;
   
   float Drive = P + I + D;
   

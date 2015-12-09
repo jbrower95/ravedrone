@@ -9,7 +9,7 @@ float avg = 0;
 float prevAvg = 0;
 
 // Set up the threshold and the decay rate, for use when detecting a beat
-static float origT = 65;
+static float origT = 45;
 static float thresholdMin = origT - 40;
 static float threshold = origT;
 static float decayRate = .9;

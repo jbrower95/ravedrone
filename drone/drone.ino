@@ -62,8 +62,13 @@ void loop() {
   switch (DRONE_STATE) {
     case STATE_INITIALIZING: {
       // go up 2 meters.
-      setFlightTarget(readAltitude() + 2);
+      expected_altitude = readAltitude() + 1;
+      setFlightTarget(readAltitude() + 1);
       DRONE_STATE = STATE_FLYING;
+      #ifdef DEBUG
+      Serial.print("Expected Altitude: ");
+      Serial.println(expected_altitude);
+      #endif
       break;
     }
     case STATE_LANDING:
@@ -93,7 +98,7 @@ void loop() {
       #endif
       
       #ifdef DEBUG
-      //Serial.print("Altitude: ");
+      Serial.print("Altitude: ");
       Serial.println(altitude);
       #endif
 
@@ -103,11 +108,11 @@ void loop() {
       
       #ifdef DEBUG
       //Serial.print("Beat?: ");
-      Serial.println(beat);
+      //Serial.println(beat);
       #endif
       
         // Run once every 20 ticks
-        setMotorTarget(800);
+        flightControl();
         tickMotor();
       
       break;

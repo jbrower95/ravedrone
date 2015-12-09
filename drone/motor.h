@@ -5,7 +5,7 @@
 #include <Servo.h>
 
 // TODO: expose constants / functions.
-const int MIN_MICROSECONDS = 710;
+const int MIN_MICROSECONDS = 600;
 const int MAX_MICROSECONDS = 1100;
 
 const int MIN_LEVEL = 0;

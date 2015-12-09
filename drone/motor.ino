@@ -28,8 +28,6 @@ int getMotorMicroseconds(motor_t *m) {
 		     MIN_MICROSECONDS, MAX_MICROSECONDS);
 	us = constrain(us,
                        MIN_MICROSECONDS, MAX_MICROSECONDS);
-        Serial.print("US: ");
-        Serial.println(us);
 	return us;
 }
 
