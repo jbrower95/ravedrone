@@ -5,8 +5,18 @@ const int RED_PIN = 11;
 const int GREEN_PIN = 12; 
 const int BLUE_PIN = 13;
 
+const double FADE_RATE = 0.85;
+
 int intensity = 0;
-int r = HIGH;
+int currentColor = 1;
+
+int colors[][3] = {{LOW, LOW, LOW},     // 0. WHITE
+                   {LOW, LOW, HIGH},    // 1. YELLOW
+                   {LOW, HIGH, HIGH},   // 2. RED
+                   {LOW, HIGH, LOW},    // 3. PURPLE
+                   {HIGH, HIGH, LOW},   // 4. BLUE
+                   {HIGH, LOW, LOW},    // 5. CYAN
+                   {HIGH, LOW, HIGH}};  // 6. GREEN
 
 void setupLights() {
   pinMode(RED_PIN, OUTPUT);
@@ -23,16 +33,22 @@ void setupLights() {
 void updateLightsWithBeatDidOccur(bool beatDidOccur) {
   if (beatDidOccur) {
     intensity = 255;
-    r = LOW;
+    currentColor++;
+    if (currentColor > 6) {
+      currentColor = 1;
+    }
   } else {
-    intensity = max(7, intensity * 0.75);
-    r = LOW;
+    intensity = max(15, intensity * FADE_RATE);
   }
 
   // Write updates to lights
+  setColorAndIntensity(currentColor, intensity);
+}
+
+void setColorAndIntensity(int color, int intensity) {
   analogWrite(POWER_PIN, intensity);
-  digitalWrite(RED_PIN, r);
-  digitalWrite(GREEN_PIN, LOW);
-  digitalWrite(BLUE_PIN, LOW);
+  digitalWrite(RED_PIN, colors[color][0]);
+  digitalWrite(GREEN_PIN, colors[color][1]);
+  digitalWrite(BLUE_PIN, colors[color][2]);
 }
 
