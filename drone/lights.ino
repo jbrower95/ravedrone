@@ -1,6 +1,6 @@
 #include "lights.h"
 
-const int POWER_PIN = 10;   // the power pin needs PWM
+const int POWER_PIN = 5;   // the power pin needs PWM
 const int RED_PIN = 11;
 const int GREEN_PIN = 12; 
 const int BLUE_PIN = 13;
@@ -38,7 +38,7 @@ void updateLightsWithBeatDidOccur(bool beatDidOccur) {
       currentColor = 1;
     }
   } else {
-    intensity = max(15, intensity * FADE_RATE);
+    intensity = max(63, intensity * FADE_RATE);
   }
 
   // Write updates to lights

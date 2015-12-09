@@ -68,7 +68,7 @@ void loop() {
     }
     case STATE_LANDING:
       // turn off the motor.
-      setMotorTarget(0);
+      flightControl();
       tickMotor();
       break;
     case STATE_FLYING:
@@ -93,24 +93,22 @@ void loop() {
       #endif
       
       #ifdef DEBUG
-      Serial.print("Altitude: ");
+      //Serial.print("Altitude: ");
       Serial.println(altitude);
       #endif
 
       bool beatDidOccur = readSound();
-
+      
       updateLightsWithBeatDidOccur(beatDidOccur);
       
       #ifdef DEBUG
-      Serial.print("Beat?: ");
+      //Serial.print("Beat?: ");
       Serial.println(beat);
       #endif
       
-      if (!schedule) {
         // Run once every 20 ticks
-        flightControl();
+        setMotorTarget(800);
         tickMotor();
-      }
       
       break;
   }
@@ -125,8 +123,6 @@ void loop() {
      }
   }
   
-  schedule++;
-  schedule = schedule % 20;
 }
 
 

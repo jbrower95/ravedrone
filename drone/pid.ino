@@ -5,7 +5,7 @@
 // Control this large balloon with the power of PID
 
 // Proportionality constant
-float kP = .7;
+float kP = 12;
 float kI = .7;
 float kD = .5;
 
@@ -35,7 +35,14 @@ void flightControl() {
   float Drive = P + I + D;
   
   // If it's too high, it'll clamp to 0 and shut the motor off. 
-  Drive = map(constrain(Drive, 0, 50), 0, 50, MIN_LEVEL, MAX_LEVEL);
+  Drive = map(constrain(Drive, 0, 100), 0, 100, MIN_LEVEL, MAX_LEVEL);
+  
+  #ifdef DEBUG
+  Serial.print("Target: ");
+  Serial.println(target);
+  Serial.print("Drive: ");
+  Serial.println(Drive);
+  #endif
   
   setMotorTarget(Drive);
   
