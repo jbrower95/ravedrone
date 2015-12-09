@@ -1,4 +1,6 @@
 #include "pid.h"
+#include "altitude.h"
+#include "motor.h"
 
 // Control this fucking balloon
 /*
@@ -30,3 +32,34 @@
  Last = Actual; // save current value for next time
 }
 */
+
+// Proportionality constant
+float kP = .7;
+float kI = .4;
+float kD = .5;
+
+float Integral = 0;
+
+float lastAltitude = 0;
+
+void flightControl(int expectedAltitude) {
+  if (!lastAltitude) {
+    lastAltitude = getAltitude();
+  }  
+  float currentAltitude = getAltitude();
+  
+  // calculate error
+  float error = expectedAltitude - currentAltitude;
+ 
+  float P = error * kP;
+  float I = Integral * kI;
+  float D = (lastAltitude - currentAltitude) * kD;
+  
+  float Drive = P + I + D;
+  Drive = map(constrain(Drive, 0, 50), 0, 50, MIN_LEVEL, MAX_LEVEL);
+  
+  
+  
+  
+  lastAltitude = currentAltitude;
+}
