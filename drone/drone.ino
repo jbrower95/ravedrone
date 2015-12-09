@@ -42,6 +42,9 @@ void setup(void) {
   
   // Initialize lights
   setupLights();
+
+  // Initialize BLE
+  setupBLE();
   
   // Initialize drone state
   DRONE_STATE = STATE_FLYING;
@@ -66,6 +69,15 @@ void loop() {
     case STATE_FLYING:
       const float altitude = readAltitude();
       const bool beat = readSound();
+
+      int c = readBLE();
+      if (c == LAND) {
+        
+      } else if (c == UP_THRESHOLD) {
+        writeCurrentThreshold(increaseOrigThreshold());
+      } else if (c == DOWN_THRESHOLD) {
+        writeCurrentThreshold(decreaseOrigThreshold());
+      }
       
       #ifdef DEBUG
       Serial.print("Altitude: ");

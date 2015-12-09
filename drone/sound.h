@@ -10,4 +10,7 @@ bool readSound();
 // Access this array to read the values for the EQ.
 float __SOUND[7];
 
+int increaseOrigThreshold();
+int decreaseOrigThreshold();
+
 #endif

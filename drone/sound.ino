@@ -9,7 +9,7 @@ float avg = 0;
 float prevAvg = 0;
 
 // Set up the threshold and the decay rate, for use when detecting a beat
-static float origT = 50;
+float origT = 50;
 static float thresholdMin = origT - 40;
 static float threshold = origT;
 static float decayRate = .9;
@@ -28,6 +28,16 @@ void setupSound() {
     digitalWrite(strobePin, HIGH);
     
     Serial.println("Sound initialized");
+}
+
+int increaseOrigThreshold() {
+  origT += 50;
+  return origT;
+}
+
+int decreaseOrigThreshold() {
+  origT -= 50;
+  return origT;
 }
 
 bool readSound() {

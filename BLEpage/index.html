@@ -8,9 +8,11 @@
 		initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
 
 	<title>Redbear Labs - Simple Chat</title>
+    
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
 
 	<style>
-		@import 'ui/css/evothings-app.css';
+		@import 'ui/css/BLEapp.css';
 		@import 'app.css';
 	</style>
 
@@ -32,38 +34,39 @@
 	<header>
 
 		<button class="back" onclick="history.back()">
-			<img src="ui/images/arrow-left.svg" />
+			<img src="ui/images/back.svg" />
 		</button>
-
-		<img class="logotype" src="ui/images/logo.svg" alt="Evothings" />
+        
+        <img src="ui/images/balloon.svg" />
+        
+        <div></div>
 
 	</header>
 
-	<h1>Simple Chat</h1>
-
+    <div id="landingView"  style="display:none">
+        <b>LANDING</b><br/>
+        Please reset arduino and reconnect to BLE to begin.
+    </div>
+    
 	<div id="startView">	
-
-		<img class="center" src="img/RedBearLab.jpg">
-		<button class="red wide" onclick="app.startScan()">Scan</button>
-
+		<button class="scan" onclick="app.startScan()" >Scan for BLE Shield</button>
 	</div>
 
 	<div id="scanResultView" style="display:none"></div>
 
-	<div id="conversationView" style="display:none">
-
-		<div id="conversation"></div>
-
-		<div id="conversationControl" style="width:100%">
-
-			<button id="sendButton" class="green wide"
-				onclick="app.sendMessage(0)">Send</button>
-
-			<button id="disconnectButton" class="red wide"
-				onclick="app.disconnect(1)">Disconnect</button>
-
-		</div>
-
+	<div id="controlView" style="display:none;">
+        <div class="land">
+            <span class="btnHeader">LAND</span>
+            <button onclick="app.sendMessage(0)"><img src="ui/images/down.svg"></button>
+        </div>
+        <div class="thresholdEdit">
+            <span class="btnHeader">BEAT THRESHOLD</span>
+            <div class="buttons">
+                <button class="left" onclick="app.sendMessage(2)"><img src="ui/images/minus.svg"></button>
+                <button onclick="app.sendMessage(1)"><img src="ui/images/plus.svg"></button>
+            </div>
+            <span class="thresholdValue">100</span>
+        </div>
 	</div>
 
 	<div id="loadingView" style="display:none">

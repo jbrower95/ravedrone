@@ -1,8 +1,8 @@
 #include "bluetooth.h"
-
-#define LAND 49
-#define UP_THRESHOLD 50
-#define DOWN_THRESHOLD 51
+#include <SPI.h>
+#include <boards.h>
+#include <RBL_nRF8001.h>
+#include <RBL_services.h>
 
 void setupBLE() {
   // TODO: Get rid of this todo. Possibly makes using pin 7 or 8 really shitty?
@@ -18,19 +18,33 @@ void setupBLE() {
   ble_set_name("RaveDrone");
 }
 
-void readBLE() {
+void writeCurrentThreshold(int threshold) {
+  int t = threshold;
+  int digits[sizeof(String(t))-1];
+  Serial.println(sizeof(String(t)));
+  int i = 0;
+  if (t == 0) {
+    digits[0] = 48;
+  }
+  while (t > 0) {
+    digits[i] = (t % 10) + 48;
+    t = t / 10;
+    i++;
+  }
+  for (int i = sizeof(String(t)) - 2; i >= 0; i--) {
+    Serial.print("digit: ");
+    Serial.println(digits[i]);
+    ble_write(digits[i]);
+  }
+  ble_do_events();
+}
+
+int readBLE() {
   // If there's any input...
   if(ble_available()) {
     // Read input.
     int c = ble_read();
-
-    if (c == LAND) {
-      
-    } else if (c == UP_THRESHOLD) {
-      
-    } else if (c == DOWN_THRESHOLD) {
-      
-    }
+    return c;
   }
   
   // Process BLE events.

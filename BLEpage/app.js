@@ -9,276 +9,258 @@ app.RBL_TX_UUID_DESCRIPTOR = '00002902-0000-1000-8000-00805f9b34fb';
 
 app.initialize = function()
 {
-	app.connected = false;
+    app.connected = false;
 };
 
-app.sendMessage = function(value)
+app.sendMessage = function(val)
 {
-	if (app.connected)
-	{
-		function onMessageSendSuccess()
-		{
-			console.log('Sent message.');
-		}
+    if (app.connected)
+    {
+        function onMessageSendSuccess()
+        {
+            if (val == 0) {
+                app.setLandingState();
+            }
+        };
 
-		function onMessageSendFailure(errorCode)
-		{
-			// Disconnect and show an error message to the user.
-			app.disconnect('Disconnected');
+        function onMessageSendFailure(errorCode)
+        {
+            // Disconnect and show an error message to the user.
+            app.disconnect('Disconnected');
 
-			// Write debug information to console
-			console.log('Error - No device connected.');
-		};
+            // Write debug information to console
+            console.log('Error - No device connected.');
+        };
+        // Convert message
+        var data = new Uint8Array([val]);
 
-		// Convert message
-		var data = new Uint8Array(value.length);
+        app.device.writeCharacteristic(
+            app.RBL_CHAR_RX_UUID,
+            data,
+            onMessageSendSuccess,
+            onMessageSendFailure
+        );
+    }
+    else
+    {
+        // Disconnect and show an error message to the user.
+        app.disconnect('Disconnected');
 
-		for (var i = 0, messageLength = message.length;
-			i < messageLength;
-			i++)
-		{
-			data[i] = message.charCodeAt(i);
-		}
-
-		app.device.writeCharacteristic(
-			app.RBL_CHAR_RX_UUID,
-			data,
-			onMessageSendSuccess,
-			onMessageSendFailure
-		);
-	}
-	else
-	{
-		// Disconnect and show an error message to the user.
-		app.disconnect('Disconnected');
-
-		// Write debug information to console
-		console.log('Error - No device connected.');
-	}
+        // Write debug information to console
+        console.log('Error - No device connected.');
+    }
 };
+
+app.setLandingState = function() {
+    $("#controlView").hide();
+    $("#landingView").show();
+    $("#startView").show();
+}
 
 app.setLoadingLabel = function(message)
 {
-	console.log(message);
-	$('#loadingStatus').text(message);
+    console.log(message);
+    $('#loadingStatus').text(message);
 };
 
 app.connectTo = function(address)
 {
-	device = app.devices[address];
+    device = app.devices[address];
 
-	$('#loadingView').css('display', 'table');
+    $('#loadingView').css('display', 'table');
 
-	app.setLoadingLabel('Trying to connect to ' + device.name);
+    app.setLoadingLabel('Trying to connect to ' + device.name);
 
-	function onConnectSuccess(device)
-	{
+    function onConnectSuccess(device)
+    {
 
-		function onServiceSuccess(device)
-		{
-			// Application is now connected
-			app.connected = true;
-			app.device = device;
+        function onServiceSuccess(device)
+        {
+            // Application is now connected
+            app.connected = true;
+            app.device = device;
 
-			console.log('Connected to ' + device.name);
+            console.log('Connected to ' + device.name);
 
-			device.writeDescriptor(
-				app.RBL_CHAR_TX_UUID, // Characteristic for accelerometer data
-				app.RBL_TX_UUID_DESCRIPTOR, // Configuration descriptor
-				new Uint8Array([1,0]),
-				function()
-				{
-					console.log('Status: writeDescriptor ok.');
+            device.writeDescriptor(
+                app.RBL_CHAR_TX_UUID, // Characteristic for accelerometer data
+                app.RBL_TX_UUID_DESCRIPTOR, // Configuration descriptor
+                new Uint8Array([1,0]),
+                function()
+                {
+                    console.log('Status: writeDescriptor ok.');
 
-					$('#loadingView').hide();
-					$('#scanResultView').hide();
-					$('#conversationView').show();
-				},
-				function(errorCode)
-				{
-					// Disconnect and give user feedback.
-					app.disconnect('Failed to set descriptor.');
+                    $('#loadingView').hide();
+                    $('#scanResultView').hide();
+                    $('#landingView').hide();
+                    $('#controlView').show();
+                },
+                function(errorCode)
+                {
+                    // Disconnect and give user feedback.
+                    app.disconnect('Failed to set descriptor.');
 
-					// Write debug information to console.
-					console.log('Error: writeDescriptor: ' + errorCode + '.');
-				}
-			);
+                    // Write debug information to console.
+                    console.log('Error: writeDescriptor: ' + errorCode + '.');
+                }
+            );
 
-			function failedToEnableNotification(erroCode)
-			{
-				console.log('BLE enableNotification error: ' + errorCode);
-			};
+            function failedToEnableNotification(erroCode)
+            {
+                console.log('BLE enableNotification error: ' + errorCode);
+            };
 
-			device.enableNotification(
-				app.RBL_CHAR_TX_UUID,
-				app.receivedMessage,
-				function(errorcode)
-				{
-					console.log('BLE enableNotification error: ' + errorCode);
-				}
-			);
+            device.enableNotification(
+                app.RBL_CHAR_TX_UUID,
+                app.receivedMessage,
+                function(errorcode)
+                {
+                    console.log('BLE enableNotification error: ' + errorCode);
+                }
+            );
 
-			$('#scanResultView').hide();
-			$('#conversationView').show();
-		}
+            $('#scanResultView').hide();
+            $('#landingView').hide();
+            $('#controlView').show();
+        }
 
-		function onServiceFailure(errorCode)
-		{
-			// Disconnect and show an error message to the user.
-			app.disconnect('Device is not from RedBearLab');
+        function onServiceFailure(errorCode)
+        {
+            // Disconnect and show an error message to the user.
+            app.disconnect('Device is not from RedBearLab');
 
-			// Write debug information to console.
-			console.log('Error reading services: ' + errorCode);
-		}
+            // Write debug information to console.
+            console.log('Error reading services: ' + errorCode);
+        }
 
-		app.setLoadingLabel('Identifying services...');
+        app.setLoadingLabel('Identifying services...');
 
-		// Connect to the appropriate BLE service
-		device.readServices(
-			[app.RBL_SERVICE_UUID],
-			onServiceSuccess,
-			onServiceFailure
-		);
-	}
+        // Connect to the appropriate BLE service
+        device.readServices(
+            [app.RBL_SERVICE_UUID],
+            onServiceSuccess,
+            onServiceFailure
+        );
+    }
 
-	function onConnectFailure(errorCode)
-	{
-		app.disconnect('Disconnected from device');
+    function onConnectFailure(errorCode)
+    {
+        app.disconnect('Disconnected from device');
 
-		// Show an error message to the user
-		console.log('Error ' + errorCode);
-	}
+        // Show an error message to the user
+        console.log('Error ' + errorCode);
+    }
 
-	// Stop scanning
-	evothings.easyble.stopScan();
+    // Stop scanning
+    evothings.easyble.stopScan();
 
-	// Connect to our device
-	console.log('Identifying service for communication');
-	device.connect(onConnectSuccess, onConnectFailure);
+    // Connect to our device
+    console.log('Identifying service for communication');
+    device.connect(onConnectSuccess, onConnectFailure);
 };
 
 app.startScan = function()
 {
-	app.disconnect();
+    app.disconnect();
 
-	console.log('Scanning started...');
+    console.log('Scanning started...');
 
-	app.devices = {};
+    app.devices = {};
 
-	var htmlString =
-		'<img src="img/loader_small.gif" style="display:inline; vertical-align:middle">' +
-		'<p style="display:inline">   Scanning...</p>';
+    var htmlString =
+        '<img src="img/loader_small.gif" style="display:inline; vertical-align:middle">' +
+        '<p style="display:inline">   Scanning...</p>';
 
-	$('#scanResultView').append($(htmlString));
+    $('#scanResultView').append($(htmlString));
 
-	$('#scanResultView').show();
+    $('#scanResultView').show();
 
-	function onScanSuccess(device)
-	{
-		if (device.name != null)
-		{
-			app.devices[device.address] = device;
+    function onScanSuccess(device)
+    {
+        if (device.name != null)
+        {
+            app.devices[device.address] = device;
 
-			console.log('Found: ' + device.name + ', ' + device.address + ', ' + device.rssi);
+            console.log('Found: ' + device.name + ', ' + device.address + ', ' + device.rssi);
 
-			var htmlString =
-				'<div class="deviceContainer" onclick="app.connectTo(\'' +
-					device.address + '\')">' +
-				'<p class="deviceName">' + device.name + '</p>' +
-				'<p class="deviceAddress">' + device.address + '</p>' +
-				'</div>';
+            var htmlString =
+                '<div class="deviceContainer" onclick="app.connectTo(\'' +
+                device.address + '\')">' +
+                '<p class="deviceName">' + device.name + '</p>' +
+                '<p class="deviceAddress">' + device.address + '</p>' +
+                '</div>';
 
-			$('#scanResultView').append($(htmlString));
-		}
-	};
+            $('#scanResultView').append($(htmlString));
+        }
+    };
 
-	function onScanFailure(errorCode)
-	{
-		// Show an error message to the user
-		app.disconnect('Failed to scan for devices.');
+    function onScanFailure(errorCode)
+    {
+        // Show an error message to the user
+        app.disconnect('Failed to scan for devices.');
 
-		// Write debug information to console.
-		console.log('Error ' + errorCode);
-	};
+        // Write debug information to console.
+        console.log('Error ' + errorCode);
+    };
 
-	evothings.easyble.reportDeviceOnce(true);
-	evothings.easyble.startScan(onScanSuccess, onScanFailure);
+    evothings.easyble.reportDeviceOnce(true);
+    evothings.easyble.startScan(onScanSuccess, onScanFailure);
 
-	$('#startView').hide();
+    $('#startView').hide();
 };
 
 app.receivedMessage = function(data)
 {
-	if (app.connected)
-	{
-		// Convert data to String
-		var message = String.fromCharCode.apply(null, new Uint8Array(data));
+    if (app.connected)
+    {
+        // Convert data to String
+        var message = String.fromCharCode.apply(null, new Uint8Array(data));
+        
+        // Update conversation
+        app.updateThresholdValue(message);
 
-		// Update conversation
-		app.updateConversation(message, true);
 
-		console.log('Message received: ' + message);
-	}
-	else
-	{
-		// Disconnect and show an error message to the user.
-		app.disconnect('Disconnected');
+    }
+    else
+    {
+        // Disconnect and show an error message to the user.
+        app.disconnect('Disconnected');
 
-		// Write debug information to console
-		console.log('Error - No device connected.');
-	}
+        // Write debug information to console
+        console.log('Error - No device connected.');
+    }
 };
 
-app.updateConversation = function(message, isRemoteMessage)
-{
-	// Insert message into DOM model.
-	var timeStamp = new Date().toLocaleString();
+app.updateThresholdValue = function(value) {
+    if (isNaN(parseInt(value))) {
+        alert("Error: Got a non-number response from arduino: " + value)
+    } else {
+        $(".thresholdValue").text(value);
+    }
 
-	var htmlString =
-		'<div class="messageContainer">' +
-			'<div class="messageTimestamp">' +
-				'<p class="messageTimestamp">' + timeStamp + '</p>' +
-			'</div>' +
-			'<div class="messageIcon">' +
-				'<img class="messageIcon" src="img/' +
-					(isRemoteMessage == true ? 'arduino.png' : 'apple.png') + '">' +
-			'</div>' +
-			'<div class="message">' +
-				'<p class="message">' + message +'</p>'+
-			'</div>' +
-		'</div>';
-
-	$('#conversation').append($(htmlString));
-
-	$('html,body').animate(
-		{
-			scrollTop: $('#disconnectButton').offset().top
-		},
-		'slow'
-	);
-};
+}
 
 app.disconnect = function(errorMessage)
 {
-	if (errorMessage)
-	{
-		navigator.notification.alert(errorMessage, function() {});
-	}
+    if (errorMessage)
+    {
+        navigator.notification.alert(errorMessage, function() {});
+    }
 
-	app.connected = false;
-	app.device = null;
+    app.connected = false;
+    app.device = null;
 
-	// Stop any ongoing scan and close devices.
-	evothings.easyble.stopScan();
-	evothings.easyble.closeConnectedDevices();
+    // Stop any ongoing scan and close devices.
+    evothings.easyble.stopScan();
+    evothings.easyble.closeConnectedDevices();
 
-	console.log('Disconnected');
+    console.log('Disconnected');
 
-	$('#loadingView').hide();
-	$('#scanResultView').hide();
-	$('#scanResultView').empty();
-	$('#conversation').empty();
-	$('#conversationView').hide();
+    $('#loadingView').hide();
+    $('#scanResultView').hide();
+    $('#scanResultView').empty();
+    $('#controlView').hide();
+    $('#landingView').hide();
 
-	$('#startView').show();
+    $('#startView').show();
 };
