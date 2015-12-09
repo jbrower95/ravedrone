@@ -1,6 +1,7 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP085_U.h>
+#include <EEPROM.h>
 
 #include "err.h"      // User-level error reporting code
 #include "altitude.h" // Altitude monitoring code
