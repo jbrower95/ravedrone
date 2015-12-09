@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no
+		initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+	<title>Redbear Labs - Simple Chat</title>
+    
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+
+	<style>
+		@import 'ui/css/BLEapp.css';
+		@import 'app.css';
+	</style>
+
+	<script>
+	// Redirect console.log to Evothings Workbench.
+	if (window.hyper && window.hyper.log) { console.log = hyper.log }
+	</script>
+
+	<script src="cordova.js"></script>
+	<script src="libs/evothings/evothings.js"></script>
+	<script src="libs/evothings/easyble/easyble.js"></script>
+	<script src="libs/jquery/jquery.js"></script>
+	<script src="app.js"></script>
+
+</head>
+
+<body ontouchstart="">
+	
+	<header>
+
+		<button class="back" onclick="history.back()">
+			<img src="ui/images/back.svg" />
+		</button>
+        
+        <img src="ui/images/balloon.svg" />
+        
+        <div></div>
+
+	</header>
+
+    <div id="landingView"  style="display:none">
+        <b>LANDING</b><br/>
+        Please reset arduino and reconnect to BLE to begin.
+    </div>
+    
+	<div id="startView">	
+		<button class="scan" onclick="app.startScan()" >Scan for BLE Shield</button>
+	</div>
+
+	<div id="scanResultView" style="display:none"></div>
+
+	<div id="controlView" style="display:none;">
+        <div class="land">
+            <span class="btnHeader">LAND</span>
+            <button onclick="app.sendMessage(0)"><img src="ui/images/down.svg"></button>
+        </div>
+        <div class="thresholdEdit">
+            <span class="btnHeader">BEAT THRESHOLD</span>
+            <div class="buttons">
+                <button class="left" onclick="app.sendMessage(2)"><img src="ui/images/minus.svg"></button>
+                <button onclick="app.sendMessage(1)"><img src="ui/images/plus.svg"></button>
+            </div>
+            <span class="thresholdValue">100</span>
+        </div>
+	</div>
+
+	<div id="loadingView" style="display:none">
+
+		<div id="loadingIndicator">
+			<img src="img/loader.gif" />
+			<p id="loadingStatus"></p>
+		</div>
+		
+	</div>
+
+</body>
+
+</html>

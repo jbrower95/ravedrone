@@ -31,8 +31,17 @@ static int filter = 80;
     Serial.println("Sound initialized");
   }
 
-  bool readSound()
-  {
+int increaseOrigThreshold() {
+  origT += 50;
+  return origT;
+}
+
+int decreaseOrigThreshold() {
+  origT -= 50;
+  return origT;
+}
+
+bool readSound() {
     // Reset to allow strobe to work
     digitalWrite(resetPin, HIGH);
     digitalWrite(resetPin, LOW);

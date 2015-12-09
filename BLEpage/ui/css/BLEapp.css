@@ -1,0 +1,235 @@
+@import '../fonts/ProximaNova.css';
+
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+
+	font-family: 'Open Sans', sans-serif;
+	font-weight: normal;
+
+	background: #230F2B;
+    color: white;
+
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+body {
+	font-size: 150%;
+	font-size: 7.5vw;
+    text-align: center;
+}
+
+/* Add a top margin to the content corresponding to the height of the header. */
+body::before,
+section::before {
+	display: block;
+	width: 100%;
+	height: 1.1em; /* Should correspond to header's height. */
+	margin-bottom: 0.4em;
+
+	content: '\0000a0'; /* Non-breaking space (&nbsp;) */
+	font-size: 180%; /* Same as the header's font size. */
+	line-height: 200%; /* Slighly more than the header's line-height. */
+}
+
+/* Add a bottom margin. */
+body::after,
+section::after {
+	display:block;
+	content: '';
+	height: 1em;
+}
+
+
+
+
+/*  ----------------------------------------------------------
+								GENERAL
+	---------------------------------------------------------- */
+
+.hidden {
+	display: none;
+}
+
+button {
+    box-shadow: none;
+    border: none;
+    display: block;
+    background: none;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+
+/*  ----------------------------------------------------------
+								HEADER
+	---------------------------------------------------------- */
+
+/* The header's height is determined by the contained text's font size. */
+header {
+	box-sizing: border-box; /* Width & height includes padding & border. */
+
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+
+	width: 100%;
+	height: 1.1em;
+
+	/* Left and right margins should correspond to body margins. */
+	margin: 1% 0 3.45% 0;
+	/* Left padding should correspond to the back button's width. */
+	padding: 1% 2% 1% 2%;
+
+	font-size: 180%;
+	text-align: center;
+
+	z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header div {
+    width: 10%;
+}
+
+header button.back, header img {
+	margin: 0;
+    background: none;
+    height: 100%;
+    width: auto;
+    position: relative;
+}
+
+header button.back img {
+	height: 50%;
+    width: auto;
+    position: relative;
+}
+
+header img.logotype {
+	position: absolute;
+	top: 50%;
+	left: 0;
+	right: 0;
+
+	height: 60%;
+
+	margin: 0 auto;
+
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+
+/*  ----------------------------------------------------------
+								SCAN
+	---------------------------------------------------------- */
+
+button.scan {
+    width: 60%;
+    margin: 0 auto;
+    margin-top: 40%;
+    height: 5%;
+    position: relative;
+    background: none;
+    background-color: #F21D41;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    font-size: .8em;
+    padding: 1% 2% 1% 2%;
+}
+
+/*  ----------------------------------------------------------
+								CONTROLS
+	---------------------------------------------------------- */
+
+#controlView {
+    width: 80%;
+    height: auto;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 30%;
+}
+
+#controlView button {
+    opacity: 1;
+    transition: opacity .1s;
+}
+
+#controlView button:hover {
+    opacity: .5;
+}
+
+.land {
+    margin-right: 10%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.land button {
+    margin-top: 20px;
+}
+
+.thresholdEdit .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.thresholdEdit .buttons .left {
+    margin-right: 15%;
+}
+
+.land button img, .thresholdEdit button img {
+    width: 40px;
+    height: auto;
+}
+
+.thresholdEdit span {
+    display: block;
+}
+
+.thresholdEdit {
+    display: flex;
+    flex-direction: column;
+}
+
+.btnHeader {
+    font-size: .6em;
+    margin: 0;
+}
+
+/*  ----------------------------------------------------------
+								LANDING VIEW
+	---------------------------------------------------------- */
+#landingView {
+    font-size: .6em;
+    magrin-top: 10%;
+    width: 60%;
+    margin: 0 auto;
+}
+
+
+@media	screen and (orientation: landscape) and (-webkit-min-device-pixel-ratio : 2),
+		screen and (orientation: landscape) and (min--moz-device-pixel-ratio: 2),
+		screen and (orientation: landscape) and (min-device-pixel-ratio : 2) {
+	body { font-size: 4.5vw; }
+}
