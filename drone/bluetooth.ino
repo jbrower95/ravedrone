@@ -55,6 +55,7 @@ int readBLE() {
   
   // Process BLE events.
   ble_do_events();
+  return -1;
 }
 
 #endif
