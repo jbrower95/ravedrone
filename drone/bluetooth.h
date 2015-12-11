@@ -1,6 +1,7 @@
 #ifndef BLUETOOTH_H
 #define BLUETOOTH_H
 
+// Enumerated input from attacked BLE device.
 #define LAND 0
 #define UP_THRESHOLD 1
 #define DOWN_THRESHOLD 2

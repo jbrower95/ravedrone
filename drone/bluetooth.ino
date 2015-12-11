@@ -7,7 +7,8 @@
 #include <RBL_services.h>
 
 void setupBLE() {
-  // TODO: Get rid of this todo. Possibly makes using pin 7 or 8 really shitty?
+  // Allow communication with Serial Peripheral Interface device
+  // Set up communication details: clock polarity/phase, bit order, etc.
   SPI.setDataMode(SPI_MODE0);
   SPI.setBitOrder(LSBFIRST);
   SPI.setClockDivider(SPI_CLOCK_DIV16);
@@ -20,6 +21,9 @@ void setupBLE() {
   ble_set_name("RaveDrone");
 }
 
+// Gets the current threshold used for detecting beats 
+// and writes the digits, one by one, to the attached device 
+// for the user to view
 void writeCurrentThreshold(int threshold) {
   int t = threshold;
   int digits[sizeof(String(t))-1];
@@ -34,13 +38,13 @@ void writeCurrentThreshold(int threshold) {
     i++;
   }
   for (int i = sizeof(String(t)) - 2; i >= 0; i--) {
-    Serial.print("digit: ");
-    Serial.println(digits[i]);
     ble_write(digits[i]);
   }
   ble_do_events();
 }
 
+// Reads for input from the attached device.
+// The input is parsed in the main loop.
 int readBLE() {
   // If there's any input...
   if(ble_available()) {

@@ -41,7 +41,7 @@ void setup(void) {
   setupMotor();
   setupSound();
   setupLights();
-  
+
   #ifdef BLUETOOTH
   setupBLE();
   #endif
@@ -89,9 +89,13 @@ void loop() {
           DRONE_STATE = STATE_LANDING;
           break;
         case UP_THRESHOLD:
+          // If the user turned up the threshold, increase and write
+          // new value to device
           writeCurrentThreshold(increaseOrigThreshold());
           break;
         case DOWN_THRESHOLD:
+          // If the user turned down the threshold, decrease and write
+          // new value to device
           writeCurrentThreshold(decreaseOrigThreshold());
           break;
       }

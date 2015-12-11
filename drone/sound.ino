@@ -9,7 +9,7 @@ float avg = 0;
 float prevAvg = 0;
 
 // Set up the threshold and the decay rate, for use when detecting a beat
-static float origT = 45;
+static float origT = 45; // Editable through bluetooth, currently high sensitivity (though limited by mic)
 static float thresholdMin = origT - 40;
 static float threshold = origT;
 static float decayRate = .9;
@@ -17,30 +17,40 @@ static float decayRate = .9;
 // With no input, MSGEQ7 outputs around 50-80 in each spectrum.
 // Use this to filter the values.
 static int filter = 80;
-  
-  void setupSound()
-  {
-    pinMode(readPin, INPUT);
-    pinMode(strobePin, OUTPUT);
-    pinMode(resetPin, OUTPUT);
-    analogReference(DEFAULT);
-    
-    digitalWrite(resetPin, LOW);
-    digitalWrite(strobePin, HIGH);
-    
-    Serial.println("Sound initialized");
-  }
 
+// Sets up the beat detection
+void setupSound()
+{
+  pinMode(readPin, INPUT);
+  pinMode(strobePin, OUTPUT);
+  pinMode(resetPin, OUTPUT);
+  analogReference(DEFAULT);
+  
+  digitalWrite(resetPin, LOW);
+  digitalWrite(strobePin, HIGH);
+  
+  Serial.println("Sound initialized");
+}
+
+// Increases the original threshold by 50
 int increaseOrigThreshold() {
   origT += 50;
   return origT;
 }
 
+// Decreases the original threshold by 50
 int decreaseOrigThreshold() {
   origT -= 50;
   return origT;
 }
 
+// "Reads" the sound input by taking in the values
+// of the MSGEQ7 equalizer, gets an average over the frequencies,
+// and detects if that average is within a certain range of the
+// previous average. If not, a beat is detected.
+// The range is defined by threshold, which begins at origT then
+// decays to a minimum value. Once a beat is detected, it restores
+// to the original value.
 bool readSound() {
     // Reset to allow strobe to work
     digitalWrite(resetPin, HIGH);
