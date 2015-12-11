@@ -218,8 +218,6 @@ app.receivedMessage = function(data)
         
         // Update conversation
         app.updateThresholdValue(message);
-
-
     }
     else
     {
