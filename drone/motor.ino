@@ -1,9 +1,12 @@
 #include "motor.h"
 
+// global motor state
 motor_t motor;
+// global servo for driving motors
 Servo motorServo;
 
 
+/* initialize the global motor */
 void setupMotor() {
   makeMotor(6, &motor, &motorServo);
 }
@@ -67,6 +70,7 @@ void tickMotor() {
 		getMotorMicroseconds(&motor));	
 }
 
+// sets the global motor's target throttle
 void setMotorTarget(int target) {
    motor.targetLevel = constrain(target, MIN_LEVEL, MAX_LEVEL); 
 }

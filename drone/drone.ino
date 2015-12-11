@@ -115,9 +115,9 @@ void loop() {
       //Serial.println(beat);
       #endif
       
-        // Run once every 20 ticks
-        flightControl();
-        tickMotor();
+        // Run once every tick
+      flightControl();
+      tickMotor();
       
       break;
   }
