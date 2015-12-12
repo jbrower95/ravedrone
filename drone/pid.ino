@@ -39,8 +39,8 @@ void flightControl() {
   return;
   
   float P = error * kP;
-  float I = 0; //Integral * kI;
-  float D = 0; //(lastAltitude - currentAltitude) * kD;
+  float I = Integral * kI;
+  float D = (lastAltitude - currentAltitude) * kD;
   
   float Drive = P + I + D;
   

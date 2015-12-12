@@ -111,8 +111,8 @@ void loop() {
       updateLightsWithBeatDidOccur(beatDidOccur);
       
       #ifdef DEBUG
-      //Serial.print("Beat?: ");
-      //Serial.println(beat);
+      Serial.print("Beat?: ");
+      Serial.println(beat);
       #endif
       
         // Run once every tick
